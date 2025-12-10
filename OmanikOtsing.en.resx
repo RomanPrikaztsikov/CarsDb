@@ -118,17 +118,41 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="dataGridView1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>-2, 139</value>
+  </data>
+  <data name="dataGridView1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>522, 438</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>88, 50</value>
+  </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 21</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="searchTxt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>160, 47</value>
+  </data>
+  <data name="confirmBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>198, 82</value>
+  </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 12pt</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>190, 23</value>
+  </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>216, 45</value>
+    <value>108, 21</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Owner Search</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>518, 570</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Owner Search</value>

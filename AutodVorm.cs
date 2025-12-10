@@ -15,21 +15,12 @@ public partial class AutodVorm : Form
 
     public AutodVorm()
     {
-        /*
-        using (var db = new CarsDbContext())
-        {
-            db.Database.Migrate();
-        }
-        */
-
         string lang = CarsDb.Properties.Settings.Default.Language;
         if (string.IsNullOrEmpty(lang)) lang = "et";
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(lang);
 
         InitializeComponent();
 
-        // Apply custom styling after InitializeComponent
-        // This ensures styling persists even after designer changes
         ApplyCustomStyling();
 
         _db = new();
@@ -397,7 +388,7 @@ public partial class AutodVorm : Form
         // 
         resources.ApplyResources(label11, "label11");
         label11.Name = "label11";
-        label11.Click += this.label11_Click;
+        label11.Click += label11_Click;
         // 
         // service_mileage
         // 
@@ -409,7 +400,7 @@ public partial class AutodVorm : Form
         // 
         resources.ApplyResources(label10, "label10");
         label10.Name = "label10";
-        label10.Click += this.label10_Click;
+        label10.Click += label10_Click;
         // 
         // service_date
         // 
@@ -427,6 +418,8 @@ public partial class AutodVorm : Form
         resources.ApplyResources(label6, "label6");
         label6.Name = "label6";
         label6.Click += label6_Click;
+        // 
+        // AutodVorm
         // 
         resources.ApplyResources(this, "$this");
         Controls.Add(tabControl1);
