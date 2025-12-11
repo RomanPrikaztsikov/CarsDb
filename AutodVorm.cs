@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using WinFormsApp1.Data;
 using WinFormsApp1.Models;
 
@@ -439,7 +440,6 @@ public partial class AutodVorm : Form
 
     private void ApplyCustomStyling()
     {
-        // Pleasant color palette - Soft Blue/Teal theme
         Color primaryBlue = Color.FromArgb(70, 130, 180);      // Steel Blue
         Color lightBlue = Color.FromArgb(230, 240, 250);        // Light Blue background
         Color accentTeal = Color.FromArgb(64, 224, 208);        // Turquoise accent
@@ -781,40 +781,54 @@ public partial class AutodVorm : Form
 
     private void car_addBtn_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(cars_brand.Text))
+        if (string.IsNullOrWhiteSpace(cars_brand.Text))
         {
-            MessageBox.Show("Kirjuta õige automark!");
+            MessageBox.Show("Kirjuta õige automark!", "Viga", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         if (cars_owner.SelectedIndex == -1)
         {
-            MessageBox.Show("Vali omanik!");
+            MessageBox.Show("Vali omanik!", "Viga", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        string plate = cars_regNumber.Text.Trim().ToUpper();
+        Regex eePlate = new Regex(@"^\d{3}\s[A-Z]{3}$");
+
+        if (!eePlate.IsMatch(plate))
+        {
+            MessageBox.Show(
+                "Registrinumber peab olema kujul: 3 numbrit, tühik ja 3 tähte (näiteks 123 ABC).",
+                "Vale vorming",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
             return;
         }
 
         var car = new Car()
         {
-            Brand = cars_brand.Text,
-            Model = cars_model.Text,
-            RegistrationNumber = cars_regNumber.Text,
+            Brand = cars_brand.Text.Trim(),
+            Model = cars_model.Text.Trim(),
+            RegistrationNumber = plate,
             OwnerId = (int)cars_owner.SelectedValue
         };
 
         _db.Cars.Add(car);
         _db.SaveChanges();
 
-        // Clear form fields
         cars_brand.Text = "";
         cars_model.Text = "";
         cars_regNumber.Text = "";
         cars_owner.SelectedIndex = -1;
 
-        // Reload the grid
         LoadCarTab();
 
-        MessageBox.Show("Auto lisatud!");
+        MessageBox.Show("Auto lisatud!", "Edu", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
+
+
 
 
     private void car_deleteBtn_Click_1(object sender, EventArgs e)
@@ -1111,7 +1125,24 @@ public partial class AutodVorm : Form
         var newServiceId = (int)selectedServiceItem.GetType().GetProperty("Id")!.GetValue(selectedServiceItem)!;
 
         carService.CarId = (service_carComboBox.SelectedItem as Car)!.Id;
-        carService.ServiceId = newServiceId;
+
+        var originalCarService = _db.CarServices
+            .FirstOrDefault(cs => cs.CarId == carId && cs.ServiceId == serviceId);
+
+        _db.CarServices.Remove(originalCarService);
+        _db.SaveChanges();
+
+        var newCarService = new CarService
+        {
+            CarId = (int)service_carComboBox.SelectedValue,
+            ServiceId = newServiceId,
+            DateOfService = service_date.Value,
+            Mileage = int.Parse(service_mileage.Text)
+        };
+
+        _db.CarServices.Add(newCarService);
+        _db.SaveChanges();
+
         carService.DateOfService = service_date.Value;
         carService.Mileage = int.Parse(service_mileage.Text);
 
