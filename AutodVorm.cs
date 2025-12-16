@@ -30,7 +30,7 @@ public partial class AutodVorm : Form
             db.EnsureCreated();
         }
 
-        LoadOwners();
+        LaadiOmanikud();
     }
 
     public void InitializeComponent()
@@ -582,7 +582,7 @@ public partial class AutodVorm : Form
     private Button language_englishBtn;
     private TabPage carsPage;
 
-    private void LoadOwners()
+    private void LaadiOmanikud()
     {
         var filter = owners_searchTxt.Text ?? "";
 
@@ -654,7 +654,7 @@ public partial class AutodVorm : Form
 
         _db.SaveChanges();
 
-        LoadOwners();
+        LaadiOmanikud();
         MessageBox.Show("Omanik uuendatud!");
     }
 
@@ -678,7 +678,7 @@ public partial class AutodVorm : Form
         _db.Owners.Remove(owner);
         _db.SaveChanges();
 
-        LoadOwners();
+        LaadiOmanikud();
         MessageBox.Show("Omanik kustutatud!");
     }
 
@@ -710,7 +710,7 @@ public partial class AutodVorm : Form
         owner_phone.Text = "";
         ownersDataGridView.ClearSelection();
 
-        LoadOwners();
+        LaadiOmanikud();
 
         MessageBox.Show("Uus omanik lisatud!");
     }
@@ -719,19 +719,19 @@ public partial class AutodVorm : Form
     {
         if (tabControl1.SelectedTab == ownersPage)
         {
-            LoadOwners();
+            LaadiOmanikud();
         }
         if (tabControl1.SelectedTab == carsPage)
         {
-            LoadCarTab();
+            LaadiCarVahekaart();
         }
         if (tabControl1.SelectedTab == servicesPage)
         {
-            LoadTeenused();
+            LaadiTeenused();
         }
     }
 
-    private void LoadCarTab()
+    private void LaadiCarVahekaart()
     {
         var owners = _db.Owners.ToList();
 
@@ -823,7 +823,7 @@ public partial class AutodVorm : Form
         cars_regNumber.Text = "";
         cars_owner.SelectedIndex = -1;
 
-        LoadCarTab();
+        LaadiCarVahekaart();
 
         MessageBox.Show("Auto lisatud!", "Edu", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
@@ -860,7 +860,7 @@ public partial class AutodVorm : Form
             _db.Cars.Remove(car);
             _db.SaveChanges();
 
-            LoadCarTab();
+            LaadiCarVahekaart();
             MessageBox.Show("Auto kustutatud!");
         }
     }
@@ -902,13 +902,13 @@ public partial class AutodVorm : Form
 
         _db.SaveChanges();
 
-        LoadCarTab();
+        LaadiCarVahekaart();
         MessageBox.Show("Auto uuendatud!");
     }
 
     private void cars_searchTxt_TextChanged(object sender, EventArgs e)
     {
-        LoadOwners();
+        LaadiOmanikud();
     }
 
     private void label6_Click(object sender, EventArgs e)
@@ -916,8 +916,10 @@ public partial class AutodVorm : Form
 
     }
 
-    private void LoadTeenused()
+    private void LaadiTeenused()
     {
+        var filter = textBox1.Text ?? "";
+
         var cars = _db.Cars.ToList();
         var services = _db.Services.ToList();
 
@@ -941,8 +943,6 @@ public partial class AutodVorm : Form
         service_serviceComboBox.ValueMember = "Id";
         service_serviceComboBox.SelectedIndex = -1;
 
-        // Load CarServices into the data grid with search filter
-        var filter = textBox1.Text ?? "";
         var allCarServices = _db.CarServices
             .Include(cs => cs.Car)
             .Include(cs => cs.Service)
@@ -964,6 +964,7 @@ public partial class AutodVorm : Form
             {
                 Auto = cs.Car != null ? $"{cs.Car.Brand} {cs.Car.Model} ({cs.Car.RegistrationNumber})" : "N/A",
                 Teenus = cs.Service != null ? cs.Service.Name : "N/A",
+                Hind = cs.Service != null ? cs.Service.Price : 0,
                 Kuupäev = cs.DateOfService.ToString("dd.MM.yyyy"),
                 Läbisõit = cs.Mileage,
                 CarId = cs.CarId,
@@ -974,9 +975,10 @@ public partial class AutodVorm : Form
         service_dataGrid.DataSource = carServices;
     }
 
+
     private void service_searchTxt_TextChanged(object sender, EventArgs e)
     {
-        LoadTeenused();
+        LaadiTeenused();
     }
 
     private void service_manageBtn_Click(object sender, EventArgs e)
@@ -986,7 +988,7 @@ public partial class AutodVorm : Form
             serviceForm.ShowDialog();
         }
         // Refresh services after the form closes
-        LoadTeenused();
+        LaadiTeenused();
     }
 
     private void teenused_carSearchBtn_Click(object sender, EventArgs e)
@@ -1047,14 +1049,12 @@ public partial class AutodVorm : Form
         _db.CarServices.Add(carService);
         _db.SaveChanges();
 
-        // Clear form fields
         service_carComboBox.SelectedIndex = -1;
         service_serviceComboBox.SelectedIndex = -1;
         service_mileage.Text = "";
         service_date.Value = DateTime.Now;
 
-        // Reload to show the new service in the grid
-        LoadTeenused();
+        LaadiTeenused();
 
         MessageBox.Show("Teenus lisatud!");
     }
@@ -1148,14 +1148,13 @@ public partial class AutodVorm : Form
 
         _db.SaveChanges();
 
-        // Clear form fields
         service_carComboBox.SelectedIndex = -1;
         service_serviceComboBox.SelectedIndex = -1;
         service_mileage.Text = "";
         service_date.Value = DateTime.Now;
         service_dataGrid.ClearSelection();
 
-        LoadTeenused();
+        LaadiTeenused();
         MessageBox.Show("Teenus uuendatud!");
     }
 
@@ -1191,7 +1190,7 @@ public partial class AutodVorm : Form
             _db.CarServices.Remove(carService);
             _db.SaveChanges();
 
-            LoadTeenused();
+            LaadiTeenused();
             MessageBox.Show("Teenus kustutatud!");
         }
     }
